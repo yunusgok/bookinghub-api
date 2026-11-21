@@ -1,0 +1,2 @@
+# No shared application secrets are required. API keys are provisioned out of band.
+# Never put customer API keys here or commit .dev.vars.

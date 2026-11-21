@@ -1,0 +1,21 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "bookinghub-api",
+  "main": "src/index.ts",
+  "compatibility_date": "2026-11-21",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "bookinghub",
+      "database_id": "00000000-0000-0000-0000-000000000000",
+      "migrations_dir": "migrations",
+    },
+  ],
+  "ratelimits": [
+    {
+      "name": "RATE_LIMITER",
+      "namespace_id": "1001",
+      "simple": { "limit": 120, "period": 60 },
+    },
+  ],
+}
