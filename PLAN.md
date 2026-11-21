@@ -22,7 +22,7 @@
 - Fresh migrations, CLI bootstrap/seed/key rotation and live HTTP smoke test pass; smoke keys revoked afterward.
 - Drizzle generation has no drift; OpenAPI export is byte-for-byte reproducible.
 - Source scan found no credential patterns; dependency licenses reviewed.
-- All documentation and v1.0.0 checklist prepared. Git initialized locally; no commit, remote, deployment, publication or release performed.
+- All documentation and v1.0.0 checklist prepared. Initial local preparation finished before publication; GitHub publication is tracked below. No deployment or release performed.
 
 See docs/verification.md for exact evidence and limits. Owner-controlled external configuration remains deliberately manual.
 
@@ -39,5 +39,7 @@ User explicitly authorized public repository creation and pushing all project so
 
 - [x] Expand README for public readers with setup, Swagger, architecture, examples, commands and limitations.
 - [x] Verify checks and inspect the exact staged files for credentials and generated data.
-- [ ] Create `yunusgok/bookinghub-api` as public and push `main`.
-- [ ] Verify the remote contents and observe the first GitHub Actions run.
+- [x] Create `yunusgok/bookinghub-api` as public and push `main`.
+- [x] Verify the remote contents and observe the first GitHub Actions run.
+
+Publication follow-up: the first hosted CI run exposed two missing optional WASM dependency entries in the npm 11.6-generated lockfile. Repaired it with CI's npm 11.19.1 in an empty directory, verified clean-install resolution, and retained the same application dependency versions. Hosted validation status is available from the README badge and Actions tab.

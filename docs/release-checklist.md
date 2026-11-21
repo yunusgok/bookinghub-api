@@ -16,8 +16,9 @@ The completed checks and exact results are recorded in [verification.md](verific
 
 ## Requires owner approval / external configuration
 
-- [ ] Choose GitHub owner/repository and publish the local files (Git is initialized locally).
-- [ ] Review the first CI run on GitHub; configure required checks/branch protection.
+- [x] Publish the complete source to [yunusgok/bookinghub-api](https://github.com/yunusgok/bookinghub-api) on `main`, following explicit owner approval.
+- [x] Review the first CI run on GitHub and fix the optional-dependency lockfile mismatch it detected.
+- [ ] Configure required checks/branch protection.
 - [ ] Enable GitHub private vulnerability reporting and dependency update alerts.
 - [ ] Review Cloudflare account, access policy, quotas and potential charges.
 - [ ] Create/select remote D1; replace placeholder database ID and reserve rate-limit namespace.

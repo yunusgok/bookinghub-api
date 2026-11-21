@@ -35,10 +35,18 @@ The smoke script provisioned a tenant and key using the CLI, issued a replacemen
 
 ## Scope of evidence
 
-Local CI-equivalent commands, generated artifacts and local runtime behavior are verified. The GitHub Actions workflow has not run on GitHub because the project has not been published. The workflow uses read-only permissions, requires no production credentials and includes no deployment step. No remote migrations, remote smoke tests, account configuration, load tests or disaster-recovery exercise were performed. No coverage percentage, production usage or throughput is claimed. Secret scans are heuristic; review the publishable diff as a final owner step.
+Local CI-equivalent commands, generated artifacts and local runtime behavior are verified. The original local verification preceded publication; hosted CI evidence is recorded in the publication section below. The workflow uses read-only permissions, requires no production credentials and includes no deployment step. No remote migrations, remote smoke tests, account configuration, load tests or disaster-recovery exercise were performed. No coverage percentage, production usage or throughput is claimed. Secret scans are heuristic; review the publishable diff as a final owner step.
 
-The repository was initialized locally on `main`; no commit, remote, publication or release was created. All required local acceptance checks passed; external publication/deployment gates remain in the release checklist by design.
+All required local acceptance checks passed. The subsequent public GitHub publication was explicitly authorized; Cloudflare deployment and tagged release remain separate manual gates.
 
 ## Swagger UI follow-up
 
 Added public `/docs` using @hono/swagger-ui 0.6.2 and pinned Swagger UI 5.35.1 CDN assets. The browser rendered the API, resource groups, schemas and Authorize control correctly. The specification uses the current origin, and credentials are not persisted. Full `npm run check` passes with **32 tests** after this change (Node 25.2.0). Package installation reported zero known vulnerabilities.
+
+## Public GitHub publication
+
+On 2026-11-21 the owner explicitly authorized public publication. The repository was created at [yunusgok/bookinghub-api](https://github.com/yunusgok/bookinghub-api), verified as **PUBLIC**, and `main` was pushed with the full source, migrations, tests, CI, MIT license and a detailed README. The initial implementation commit is `de4dfbec7b2c4890f14c7eb36a00644a2ccb0cc3`.
+
+The exact 53 staged files were scanned before publication: no credential-pattern matches, local D1 state, `.env` files, dependencies or generated bundles were included. README local links and the end-to-end shell example's syntax were checked. Local `npm run check` passed with all **32 tests**. No Cloudflare deployment or tagged GitHub release was performed.
+
+The first hosted [CI run](https://github.com/yunusgok/bookinghub-api/actions/runs/44925576138) caught missing optional WASM dependency entries in the lockfile produced by local npm 11.6.2. The lockfile was repaired in an empty temporary directory using the runner's npm 11.19.1, and `npm ci --dry-run --ignore-scripts` validated the completed tree. Application dependency versions were retained. The [Actions page](https://github.com/yunusgok/bookinghub-api/actions) and README status badge show the current hosted validation result.
