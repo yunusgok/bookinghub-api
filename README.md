@@ -7,7 +7,7 @@
 
 A TypeScript REST API for appointment-based businesses: consultants, yoga studios and personal trainers. Each business manages customers, services and bookings using its own revocable API keys. A shared D1 database enforces tenant ownership and prevents overlapping appointments atomically.
 
-This is a backend portfolio project with local runtime verification. It has not been deployed or assessed under production load. A lightweight browser console is included for testing the backend, alongside interactive Swagger documentation. There is no public administrative API.
+This is a backend portfolio project with local runtime verification. A portfolio instance is deployed and smoke-tested; it has not been assessed under production load. A lightweight browser console is included for testing the backend, alongside interactive Swagger documentation. There is no public administrative API.
 
 ## Contents
 
@@ -24,7 +24,7 @@ This is a backend portfolio project with local runtime verification. It has not 
 - [Tests and checks](#tests-and-checks)
 - [Command reference](#command-reference)
 - [Migrations](#migrations)
-- [Deployment](#deployment-manual-not-performed)
+- [Deployment](#deployment)
 - [Security and limitations](#security-and-limitations)
 - [Roadmap](#roadmap)
 - [Troubleshooting](#troubleshooting)
@@ -269,9 +269,11 @@ CI installs with `npm ci`, checks types/lint/format, runs tests, detects OpenAPI
 
 Drizzle's schema is in `src/db/schema.ts`; SQL migrations and Drizzle snapshots are in `migrations/`. `npm run db:generate` generates schema changes. Use `npm run db:generate -- --custom --name <name>` for triggers and other custom SQL. Review generated SQL, keep full trigger bodies together between statement breakpoints, test on a fresh local database, and then run `npm run db:migrate`. Never remove the booking guard triggers or apply only the schema migration.
 
-## Deployment (manual, not performed)
+## Deployment
 
-After explicit approval to create/use Cloudflare infrastructure:
+Live portfolio instance: **https://bookinghub-api.ynsmrgok.workers.dev/**. [Swagger UI](https://bookinghub-api.ynsmrgok.workers.dev/docs) is public; all data operations require a tenant key provisioned by the operator. No shared visitor key is provided.
+
+Remote migrations and initial operator provisioning have been completed for the owner account. For subsequent manual deployments or another account:
 
 1. Authenticate with `npx wrangler login` or a scoped `CLOUDFLARE_API_TOKEN` in your environment. Do not commit it.
 2. For the configured owner account, remote D1 `bookinghub` is already provisioned in WEUR and rate-limit namespace `1001` is allocated to this project. For another account, create a database with `npx wrangler d1 create bookinghub`, set `account_id` and `database_id` in `wrangler.jsonc`, and choose an unused rate-limit namespace ID.
@@ -315,7 +317,8 @@ Use a branch and submit a pull request with a description of the behavior change
 - [Verification record](docs/verification.md)
 - [Dependency and license review](docs/dependencies.md)
 - [Release checklist](docs/release-checklist.md)
+- [Deployment operations and recovery](docs/operations.md)
 
 ## License
 
-[MIT](LICENSE). Dependency packages retain their own licenses. Publishing this repository does not deploy the API or create a tagged release.
+[MIT](LICENSE). Dependency packages retain their own licenses. Deployment and release remain explicit operator actions; CI does not deploy automatically.
