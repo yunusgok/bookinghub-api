@@ -26,8 +26,8 @@ The completed checks and exact results are recorded in [verification.md](verific
 - [x] Apply both remote migrations and provision the initial demo tenant/key; credential stored only in a Git-ignored, permission-restricted local file.
 - [x] Deploy after explicit owner approval; pass 16 remote smoke checks including isolation and 8 simultaneous conflicting creates (one 201, seven 409).
 - [x] Review remote evidence: functional portfolio deployment verified; no production-readiness, load, availability or independent audit claim.
-- [ ] Create the v1.0.0 Git tag/release only after explicit approval.
+- [x] Publish owner-authorized [v1.0.0](https://github.com/yunusgok/bookinghub-api/releases/tag/v1.0.0), verified public and pointing to deployed commit `851ff4b842fe38baf8e30c326acd79e8426dc52e`.
 
-Suggested release title: `BookingHub API v1.0.0 — tenant-isolated booking backend`.
+Published release: [BookingHub API v1.0.0](https://github.com/yunusgok/bookinghub-api/releases/tag/v1.0.0), 2026-11-22. Final Worker version: `b734804d-b79c-48d6-9c14-dc736f2b99b8`.
 
-Suggested release notes: Initial API with tenant-isolated customer/service management, hashed revocable API keys, atomic D1 booking conflict prevention, OpenAPI and Workers-runtime tests. See README and SECURITY.md for limitations and operator configuration. Do not add unverified production, performance or coverage claims.
+All items above are verified complete for this portfolio release. Future infrastructure, security and release changes still require their own review; no production, performance or coverage claim is implied.

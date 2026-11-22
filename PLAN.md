@@ -72,4 +72,6 @@ Publication follow-up: the first hosted CI run exposed two missing optional WASM
 - [x] Restore-test the remote export locally, verify foreign keys/triggers, and encrypt the supplementary backup.
 - [x] Pass 16 live checks: CRUD, pagination, auth/revocation, tenant isolation, cancellation/adjacency and eight-request booking conflict race.
 - [x] Record Free-tier costs/quotas, managed backup/log retention and operator recovery procedures.
-- [ ] Publish the owner-authorized v1.0.0 tag/release after final CI and deployment verification.
+- [x] Publish the owner-authorized v1.0.0 tag/release after final CI and deployment verification; remote tag and published release both point to deployed commit `851ff4b842fe38baf8e30c326acd79e8426dc52e`.
+
+Release completion: https://github.com/yunusgok/bookinghub-api/releases/tag/v1.0.0. Final Worker version `b734804d-b79c-48d6-9c14-dc736f2b99b8` passed HTTPS health, console, authenticated API and deployed query-redaction checks.
