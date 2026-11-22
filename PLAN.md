@@ -75,3 +75,11 @@ Publication follow-up: the first hosted CI run exposed two missing optional WASM
 - [x] Publish the owner-authorized v1.0.0 tag/release after final CI and deployment verification; remote tag and published release both point to deployed commit `851ff4b842fe38baf8e30c326acd79e8426dc52e`.
 
 Release completion: https://github.com/yunusgok/bookinghub-api/releases/tag/v1.0.0. Final Worker version `b734804d-b79c-48d6-9c14-dc736f2b99b8` passed HTTPS health, console, authenticated API and deployed query-redaction checks.
+
+## GitHub main → Cloudflare automatic deployment
+
+- [x] Confirm the existing Worker has no Git repository connection; verify the installed Cloudflare GitHub app can see `yunusgok/bookinghub-api`.
+- [x] Prepare native Workers Builds configuration: production branch `main`, build `npm run check`, deploy `npm run deploy`, root `/`, Node 24, preview builds disabled.
+- [x] Obtain explicit owner action-time approval for Cloudflare's automatically generated, account-wide build token; verify the saved repository connection and production settings.
+- [x] Update README, operations and security documentation for the saved native Git connection and managed token scope.
+- [ ] Merge the documentation PR through required CI; observe its main commit build/deploy automatically and verify live health without running local Wrangler deploy.

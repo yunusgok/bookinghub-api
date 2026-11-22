@@ -14,7 +14,7 @@ This is a functioning, remotely smoke-tested portfolio instance. It has no produ
 
 ## Account access and GitHub controls
 
-Deployment used the owner's existing Wrangler OAuth login and GitHub CLI login. No new collaborators, service principals, token scopes, paid plan or external data-export destination were added. Those existing human credentials have broad operator permissions: keep them private, revoke them if compromised, and use a narrowly scoped separate token if deployment automation is introduced later. There is no automatic deployment workflow.
+The initial release used the owner's existing Wrangler OAuth login and GitHub CLI login. Subsequently, the owner explicitly approved Cloudflare's managed `bookinghub-api build token` and native GitHub deployment connection. No collaborator, paid plan or external data-export destination was added. Human credentials and the managed build token must remain private. The managed token is stored by Cloudflare, never in repository files or GitHub Actions secrets.
 
 The active GitHub `protect main` ruleset targets the default branch. It requires a PR, the `validate` check from GitHub Actions (App ID 15368), and an up-to-date branch. Force pushes/deletion are blocked and the bypass list is empty. A solo maintainer uses zero required human approvals. Private vulnerability reporting, dependency graph, Dependabot alerts and security-update PRs are enabled.
 
@@ -85,7 +85,7 @@ The operator credential remains active for the demo tenant. Temporary isolation-
 
 ## Deployment and rollback
 
-Make changes on a branch, open a PR, wait for required CI, merge normally, and deploy the reviewed `main` commit. No administrative bypass is required.
+Make changes on a branch, open a PR, wait for required GitHub CI, and merge normally. Cloudflare Workers Builds automatically checks and deploys the resulting `main` commit. No administrative bypass or local deploy command is needed for ordinary main updates.
 
 Before a migration, record a fresh bookmark and inspect the migration:
 
@@ -98,3 +98,27 @@ npm run deploy
 Verify `/health`, `/`, `/docs`, authenticated CRUD, isolation, cancellation and conflicts. A release should record its Git commit and Worker version ID. For a code-only regression, inspect `npx wrangler deployments list` and use `npx wrangler rollback <known-good-version-id>` only after reviewing migration compatibility. A Worker rollback does not reverse D1 migrations.
 
 For data recovery, identify the exact pre-change bookmark and stop incoming writes before an owner-authorized `wrangler d1 time-travel restore` operation. It rewinds data for all tenants in this shared database. Prefer an isolated restore rehearsal first. No remote production rewind was performed during initial release preparation.
+
+## Automatic deployment
+
+The owner approved the native Cloudflare GitHub connection and its managed build token on 2026-11-22. The saved Worker settings are:
+
+| Setting                 | Value                                               |
+| ----------------------- | --------------------------------------------------- |
+| Repository              | `yunusgok/bookinghub-api`                           |
+| Production branch       | `main`                                              |
+| Build command           | `npm run check`                                     |
+| Deploy command          | `npm run deploy`                                    |
+| Root directory          | `/`                                                 |
+| Node version            | `NODE_VERSION=24`                                   |
+| Include / exclude paths | `*` / none                                          |
+| Preview builds          | Disabled                                            |
+| Build token             | `bookinghub-api build token`, managed by Cloudflare |
+
+A push or merged PR reaching main triggers a production build, including documentation-only commits. The build runs the type, lint, formatting, Workers/D1 test and dry-run bundle checks before deployment. Failures stop the deploy. GitHub Actions still runs independently as a required PR check; it does not have production secrets or a deploy job.
+
+The managed token's default permission scope is account-wide and includes Workers, D1, KV, R2, Queues and other platform services; it is not technically restricted to this Worker. That breadth was shown to the owner and explicitly approved before connection. Protect the main branch and build configuration accordingly. Revoke/replace the token in Cloudflare if compromised. The existing token for another project was not reused.
+
+D1 migrations and tenant/key provisioning are not automatic. Review compatibility and apply a required migration before merging code that depends on it. Feature/PR branches do not build or deploy to the production database through this integration. No preview resources, webhook URL or broad token secret is published.
+
+Inspect builds under Cloudflare → Workers & Pages → bookinghub-api → Deployments, and change the connection under Settings → Builds. Workers Builds uses the existing account's build quota; no paid upgrade was purchased. See [Cloudflare build configuration](https://developers.cloudflare.com/workers/ci-cd/builds/configuration/) and [branch behavior](https://developers.cloudflare.com/workers/ci-cd/builds/build-branches/).
