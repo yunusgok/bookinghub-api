@@ -109,3 +109,13 @@ Release-preparation [PR #2](https://github.com/yunusgok/bookinghub-api/pull/2) p
 [BookingHub API v1.0.0](https://github.com/yunusgok/bookinghub-api/releases/tag/v1.0.0) was published on 2026-11-22 at 19:50:51 UTC, with `isDraft=false` and `isPrerelease=false`. Both the remote Git tag and release target were verified to point to the deployed source commit above. No credential, SQL snapshot, encryption key or raw log was uploaded as a release asset.
 
 This final follow-up records checklist completion only; it does not change the tagged/deployed application code. All release-checklist items are complete for this portfolio deployment. External alerting, load assessment, offsite export replication and automated PII erasure remain explicitly documented future operational work rather than claimed features.
+
+## Native GitHub → Cloudflare deployment verification
+
+On 2026-11-22 the owner explicitly approved Cloudflare's managed, account-wide build token and completed the repository connection. The saved settings were verified in the dashboard: repository `yunusgok/bookinghub-api`, production branch `main`, root `/`, Node 24, build command `npm run check`, deploy command `npm run deploy`, include path `*` with no exclusions. Preview branch builds were verified disabled.
+
+[PR #5](https://github.com/yunusgok/bookinghub-api/pull/5) passed required GitHub CI and merged as commit `fd466055f9934aafbddbedf0eb560ea2396fe6e1`. Without any local Wrangler deploy, GitHub reported the native `Workers Builds: bookinghub-api` check running and then completed successfully. [Cloudflare build 1922a390](https://dash.cloudflare.com/6657c00f42c43bd85fe80fce5bc78aae/workers/services/view/bookinghub-api/production/builds/1922a390-0c71-4c2d-8777-082293df6bd3) used Node 24.22.3, installed dependencies from the lockfile, ran the configured checks and deployed Worker version `37dcb25c-bd41-47b0-90bb-240577b53a2c`.
+
+The dashboard showed that exact main commit with source Build, status Ready, and 100% traffic on the new version. The Workers deployment API independently confirmed the active version and 100% allocation. HTTPS `/health` and an authenticated `/v1/customers` request both returned 200 after the automatic deployment. No production migration or seed command was part of the automatic build. No deploy credential was added to source or GitHub secrets.
+
+The native Cloudflare workflow is distinct from GitHub Actions validation: PRs must pass the protected-branch check before merging, and Cloudflare independently validates/deploys main updates. The approved managed token's broad account scope is documented in [operations](operations.md#automatic-deployment).

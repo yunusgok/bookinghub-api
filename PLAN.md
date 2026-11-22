@@ -82,4 +82,6 @@ Release completion: https://github.com/yunusgok/bookinghub-api/releases/tag/v1.0
 - [x] Prepare native Workers Builds configuration: production branch `main`, build `npm run check`, deploy `npm run deploy`, root `/`, Node 24, preview builds disabled.
 - [x] Obtain explicit owner action-time approval for Cloudflare's automatically generated, account-wide build token; verify the saved repository connection and production settings.
 - [x] Update README, operations and security documentation for the saved native Git connection and managed token scope.
-- [ ] Merge the documentation PR through required CI; observe its main commit build/deploy automatically and verify live health without running local Wrangler deploy.
+- [x] Merge PR #5 through required CI; observe main commit `fd466055f9934aafbddbedf0eb560ea2396fe6e1` build/deploy automatically and verify live health/authenticated access without running local Wrangler deploy.
+
+Native build `1922a390-0c71-4c2d-8777-082293df6bd3` succeeded and deployed Worker version `37dcb25c-bd41-47b0-90bb-240577b53a2c` to 100% traffic. Cloudflare dashboard showed source Build / main / Ready; HTTPS health and authenticated customer listing both returned 200.
