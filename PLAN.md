@@ -86,10 +86,11 @@ Release completion: https://github.com/yunusgok/bookinghub-api/releases/tag/v1.0
 
 Native build `1922a390-0c71-4c2d-8777-082293df6bd3` succeeded and deployed Worker version `37dcb25c-bd41-47b0-90bb-240577b53a2c` to 100% traffic. Cloudflare dashboard showed source Build / main / Ready; HTTPS health and authenticated customer listing both returned 200.
 
-## Freelance portfolio case study
+## Project case study
 
-- [x] Write an English, client-focused case study explaining the business problem, delivery scope, key engineering decisions and verified outcomes.
+- [x] Write an English project case study explaining the business problem, delivery scope, key engineering decisions and verified outcomes.
 - [x] Link the case study prominently from the README and include a three-minute review path.
 - [x] Distinguish the independent portfolio project from commercial client work; keep performance, adoption and production claims within recorded evidence.
+- [x] Keep README and case-study wording focused on the project, its scope and verified evidence; remove job-application framing.
 
 Publication follows the protected-main PR workflow and the existing native Cloudflare build/deploy connection.

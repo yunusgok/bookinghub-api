@@ -62,10 +62,10 @@ The tests use actual local D1 bindings, and the deployed check uses the live ser
 
 A useful walkthrough is: create a customer and a 30-minute service, reserve a time, attempt a conflicting reservation, cancel the original booking, and reserve that time again.
 
-## Relevance to freelance work
+## Scope and limitations
 
-This project is a reference for TypeScript REST API development, appointment workflows, multi-tenant SaaS data models, SQL business rules, automated testing, API documentation and Cloudflare delivery.
+V1 supports one bookable resource per business and UTC timestamps. It covers customer and service management, reservation conflicts, cancellation and tenant isolation.
 
-Client discovery would establish bookable resources, time zones, access rules and existing integrations before defining scope and acceptance criteria.
+Payments, notifications, calendar synchronization, automated personal-data erasure and external uptime alerting are outside its scope. Multi-resource scheduling would require additional data-model changes, booking rules and tests.
 
-V1 supports one bookable resource per business and UTC timestamps. Payments, notifications, calendar synchronization, automated personal-data erasure and external uptime alerting are outside its scope. A client deployment would require its own operational requirements, access review and capacity assessment.
+The deployed instance uses synthetic data. Production use would require defined operational requirements, an access review and capacity assessment.
