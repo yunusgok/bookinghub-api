@@ -105,7 +105,7 @@ Open **http://localhost:8787/** after `npm run dev`. Paste a tenant API key (wit
 
 The console calls the existing `/v1` endpoints on the same origin. It performs real database changes; deactivation and cancellation ask for confirmation. API keys are held only in page memory, never in local/session storage, cookies, URLs or the response panel. Disconnecting, refreshing or leaving the page clears the key and loaded records. No demo credential is embedded in the source. Provision keys through the existing CLI.
 
-`frontend/` contains plain HTML, CSS and JavaScript. Wrangler Static Assets serves these files alongside the Worker API; `/v1/*`, `/health`, `/docs` and `/openapi.json` remain Worker routes. The console uses only local assets and works without a CDN. Static responses have their own restrictive CSP and cache/security headers in `frontend/_headers`. `npm run build` validates both the Worker and asset configuration; `npm run deploy` publishes them together only when explicitly requested.
+`frontend/` contains plain HTML, CSS and JavaScript. Wrangler Static Assets serves these files alongside the Worker API; `/v1/*`, `/health`, `/docs` and `/openapi.json` remain Worker routes. The console uses only local assets and works without a CDN. Static responses have their own restrictive CSP and cache/security headers in `frontend/_headers`. `npm run build` validates both the Worker and asset configuration; Cloudflare Workers Builds publishes them together automatically when a commit reaches the protected `main` branch.
 
 ## Authentication and rotation
 
@@ -273,7 +273,11 @@ Drizzle's schema is in `src/db/schema.ts`; SQL migrations and Drizzle snapshots 
 
 Live portfolio instance: **https://bookinghub-api.ynsmrgok.workers.dev/**. [Swagger UI](https://bookinghub-api.ynsmrgok.workers.dev/docs) is public; all data operations require a tenant key provisioned by the operator. No shared visitor key is provided.
 
-Remote migrations and initial operator provisioning have been completed for the owner account. For subsequent manual deployments or another account:
+Remote migrations and initial operator provisioning have been completed for the owner account. The existing Worker is connected to `yunusgok/bookinghub-api` through Cloudflare Workers Builds: commits reaching `main` run `npm run check`, then `npm run deploy` if checks pass. Other branches and PRs do not deploy; preview builds are disabled.
+
+GitHub Actions remains the required, read-only PR validation workflow. Cloudflare performs the deployment in its own build environment with the owner-approved managed build token; no Cloudflare deploy token is stored in GitHub or this repository. Build settings are Node 24 (`NODE_VERSION=24`), root `/`, include paths `*` and no exclusions. See [operations](docs/operations.md#automatic-deployment) for the current configuration.
+
+For a manual recovery deployment or another account:
 
 1. Authenticate with `npx wrangler login` or a scoped `CLOUDFLARE_API_TOKEN` in your environment. Do not commit it.
 2. For the configured owner account, remote D1 `bookinghub` is already provisioned in WEUR and rate-limit namespace `1001` is allocated to this project. For another account, create a database with `npx wrangler d1 create bookinghub`, set `account_id` and `database_id` in `wrangler.jsonc`, and choose an unused rate-limit namespace ID.
@@ -282,7 +286,7 @@ Remote migrations and initial operator provisioning have been completed for the 
 5. Run `npm run admin -- bootstrap "Business name" --remote` and deliver the key through a secure channel.
 6. Run `npm run check`, then `npm run deploy`. Verify health, authenticated CRUD, cancellation, tenant isolation and conflicting creates on the deployed endpoint.
 
-There is no automatic deployment job. Verify the configured account and database IDs before remote operations. See the [release checklist](docs/release-checklist.md).
+Database migrations remain explicit operator actions; apply backward-compatible migrations before merging code that needs them. The automatic deploy command does not migrate or seed D1. Verify the configured account and database IDs before remote operations. See the [release checklist](docs/release-checklist.md).
 
 ## Security and limitations
 
@@ -321,4 +325,4 @@ Use a branch and submit a pull request with a description of the behavior change
 
 ## License
 
-[MIT](LICENSE). Dependency packages retain their own licenses. Deployment and release remain explicit operator actions; CI does not deploy automatically.
+[MIT](LICENSE). Dependency packages retain their own licenses. Protected `main` updates deploy automatically through Cloudflare Workers Builds; GitHub release publication remains an explicit operator action.

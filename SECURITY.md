@@ -40,3 +40,7 @@ Drizzle Kit's stable development tooling includes deprecated esbuild-kit package
 ## Deployment operations
 
 Workers Logs and platform metrics are enabled for the deployed portfolio instance. Invocation logs and traces are disabled, and query strings are redacted at the platform configuration boundary. Application logs retain the metadata-only policy above. The initial operator API key and backup decryption key are stored only under ignored `.wrangler/credentials/`, with directory permissions 0700 and file permissions 0600. They are never distributed with the frontend, repository or release. See [operations](docs/operations.md) for backup, access, retention and rollback procedures.
+
+## Git-connected deployment
+
+The protected main branch is connected to Cloudflare Workers Builds. Production builds run `npm run check` before `npm run deploy`; feature and PR preview builds are disabled. Cloudflare stores the owner-approved managed build token. It is an account-wide platform token, not a per-Worker credential, so changes to main/build commands must be reviewed with that scope in mind. No deploy token is stored in the repository or GitHub Actions. Automatic deployment does not run D1 migrations, bootstrap tenants or seed data.
