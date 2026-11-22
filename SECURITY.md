@@ -25,6 +25,12 @@ For rotation, issue a replacement, verify clients using it, then revoke the old 
 
 Soft deletion retains personal data and existing bookings; it is not erasure. Define retention/export/deletion, encrypted backup handling, restore testing and log retention before real use. A future compliance workflow must consider backup copies and legal retention. Platform access, routes, TLS configuration, secret delivery and backup policy remain operator responsibilities.
 
+## Browser console
+
+The root test console is public static UI; all data requests still require a valid tenant credential. It is a developer tool with real write access, not an anonymous public demo. Users enter their own API key at runtime. It stays in JavaScript memory and is not persisted in localStorage, sessionStorage, cookies or URLs. Disconnect/navigation clears credentials and rendered tenant data and aborts in-flight requests. Do not hardcode a shared key in the source or provide real tenant keys to public visitors.
+
+Only self-hosted code and styles load in this console; a restrictive CSP is applied through static asset headers. Backend fields render as text rather than HTML, and authorization headers never appear in the response inspector. The existing `/docs` Swagger page remains separate and retains its documented external asset dependency.
+
 ## Known limitations and dependency review
 
 No credential scopes or expiration, centralized global throttling, idempotency keys, audit event storage, production monitoring or automated PII erasure. All keys for one tenant grant the same v1 permissions. Direct database operators must preserve canonical UTC values and migrations. Never remove triggers or disable foreign keys. No load or remote fault-injection assessment has been performed.

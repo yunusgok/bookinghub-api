@@ -1,13 +1,26 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "bookinghub-api",
+  "account_id": "6657c00f42c43bd85fe80fce5bc78aae",
   "main": "src/index.ts",
   "compatibility_date": "2026-11-21",
+  "workers_dev": true,
+  "preview_urls": false,
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1,
+    "logs": { "enabled": true, "invocation_logs": false },
+    "traces": { "enabled": false },
+  },
+  "assets": {
+    "directory": "./frontend",
+    "run_worker_first": ["/v1", "/v1/*", "/health", "/docs", "/openapi.json"],
+  },
   "d1_databases": [
     {
       "binding": "DB",
       "database_name": "bookinghub",
-      "database_id": "00000000-0000-0000-0000-000000000000",
+      "database_id": "25969992-dc46-41d5-9582-55202111a1c3",
       "migrations_dir": "migrations",
     },
   ],

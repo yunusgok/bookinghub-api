@@ -43,3 +43,22 @@ User explicitly authorized public repository creation and pushing all project so
 - [x] Verify the remote contents and observe the first GitHub Actions run.
 
 Publication follow-up: the first hosted CI run exposed two missing optional WASM dependency entries in the npm 11.6-generated lockfile. Repaired it with CI's npm 11.19.1 in an empty directory, verified clean-install resolution, and retained the same application dependency versions. Hosted validation status is available from the README badge and Actions tab.
+
+## Browser test console follow-up
+
+- [x] Add same-origin static HTML/CSS/JavaScript UI with page-memory authentication.
+- [x] Add customer/service forms, updates/deactivation, booking creation/cancellation, filters and pagination.
+- [x] Add safe response inspector and static asset security headers.
+- [x] Configure Wrangler to serve UI and preserve existing API/Swagger routes.
+- [x] Verify in Chromium against local D1: CRUD, booking conflict/cancel/reuse, filters, pagination, safe text rendering, tenant switching and mobile layout.
+- [x] Complete project checks pass: typecheck, lint, format, 32 tests and asset-enabled Worker dry run. No remote deployment or push.
+
+## Remote D1 configuration — 2026-11-22
+
+- [x] Confirm the authenticated Cloudflare account and existing D1 resources.
+- [x] Create separate remote D1 `bookinghub` in WEUR; configure account ID and database UUID.
+- [x] Inspect the two currently deployed Worker settings; neither uses a rate-limit namespace. Allocate `1001` to BookingHub and retain the existing 120 requests / 60 seconds configuration.
+- [x] Verify remote D1 info: matching UUID, WEUR region, read replication disabled, zero tables.
+- [x] Validate updated configuration with a successful Wrangler dry-run build and formatting check.
+- [ ] Apply remote migrations and provision credentials in a separately authorized step.
+- [ ] Deploy in a separately authorized step.

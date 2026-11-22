@@ -36,7 +36,7 @@ Only API writes are supported for ordinary users. Operators with direct D1 acces
 
 The admin CLI is out of band and local by default. It creates secure keys, sends only hashes to D1, restricts temporary SQL files and removes them on exit. It never exposes an HTTP bootstrap endpoint. Rate limits use native Workers bindings with IP and tenant prefixes. Missing `CF-Connecting-IP` locally uses a shared `local` bucket. Production requests must enter through Cloudflare, which supplies the connecting address; no user-controlled tenant header is honored.
 
-Structured logs contain request ID, method, response status and elapsed milliseconds only. They omit paths, query values, bodies, IPs, customer data and exception messages. `Cache-Control: no-store` prevents authenticated response caching. CORS is deliberately unconfigured; this is a server-to-server API. Credentials should never be embedded in browser code.
+Structured logs contain request ID, method, response status and elapsed milliseconds only. They omit paths, query values, bodies, IPs, customer data and exception messages. `Cache-Control: no-store` prevents authenticated response caching. CORS is deliberately unconfigured. The browser test console uses same-origin API requests, while external API clients use Bearer authentication. Credentials are entered at runtime and must never be embedded in browser code.
 
 ## Repository map
 
@@ -57,3 +57,9 @@ tests/                  Unit, integration and concurrency suites on workerd
 .github/workflows/      Secret-free validation CI
 docs/                   Architecture, decisions, examples, release evidence
 ```
+
+## Browser test console
+
+`frontend/` contains a dependency-free HTML/CSS/JavaScript console. Wrangler Static Assets serves the root page and its assets; explicit Worker-first routing preserves the API, health, Swagger and OpenAPI endpoints. No SPA fallback is enabled: missing assets remain 404 responses instead of returning HTML. Static asset headers include a self-only script/style/connect CSP, no-store caching and anti-framing headers.
+
+The console uses existing authenticated routes without adding administrative or unauthenticated data endpoints. A page-memory credential is cleared on disconnect/navigation/reload; in-flight requests are aborted and stale responses cannot repopulate another tenant's view. Backend data enters the DOM using textContent and DOM nodes, never HTML interpolation. Forms support CRUD/deactivation, UTC booking creation, cancellation and pagination. Customer/service suggestions are limited to the currently loaded pages; UUIDs can always be pasted directly.

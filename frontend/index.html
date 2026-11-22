@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light" />
+    <title>BookingHub · API Console</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <script type="module" src="/console.js"></script>
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="/"
+        >BH<span>BookingHub<small>API CONSOLE</small></span></a
+      >
+      <nav aria-label="Resources">
+        <a href="/docs" target="_blank" rel="noopener noreferrer">API docs ↗</a
+        ><a href="/openapi.json" target="_blank" rel="noopener noreferrer"
+          >OpenAPI ↗</a
+        >
+      </nav>
+    </header>
+    <main>
+      <div class="intro">
+        <div>
+          <p class="eyebrow">DEVELOPER WORKSPACE</p>
+          <h1>A simple place to test your API.</h1>
+          <p>
+            Create records, try a booking, inspect the response. All changes use
+            the real backend.
+          </p>
+        </div>
+        <span id="connection-state" class="badge">Not connected</span>
+      </div>
+      <section class="card connection" aria-labelledby="connection-heading">
+        <div>
+          <h2 id="connection-heading">Connect your tenant</h2>
+          <p>
+            Your key stays in this page’s memory. Refreshing or disconnecting
+            clears it.
+          </p>
+        </div>
+        <form id="connect-form">
+          <label for="api-key" class="sr-only">API key</label
+          ><input
+            id="api-key"
+            type="password"
+            placeholder="bh_… Enter your API key"
+            autocomplete="off"
+            spellcheck="false"
+            required
+          /><button type="submit" id="connect-button">Connect</button
+          ><button type="button" id="disconnect" class="secondary" hidden>
+            Disconnect
+          </button>
+        </form>
+        <p class="hint">
+          Need a key? Run
+          <code>npm run admin -- bootstrap "Demo Studio"</code> in your
+          terminal.
+        </p>
+      </section>
+      <div id="notice" role="status" aria-live="polite">
+        Connect a tenant to get started. API documentation is available without
+        a key.
+      </div>
+      <div class="workspace">
+        <section class="card data-panel">
+          <div class="tabs" role="tablist" aria-label="API resources">
+            <button
+              id="tab-customers"
+              role="tab"
+              aria-controls="panel-customers"
+              aria-selected="true"
+              data-tab="customers"
+            >
+              Customers
+            </button>
+            <button
+              id="tab-services"
+              role="tab"
+              aria-controls="panel-services"
+              aria-selected="false"
+              data-tab="services"
+              tabindex="-1"
+            >
+              Services
+            </button>
+            <button
+              id="tab-bookings"
+              role="tab"
+              aria-controls="panel-bookings"
+              aria-selected="false"
+              data-tab="bookings"
+              tabindex="-1"
+            >
+              Bookings
+            </button>
+          </div>
+          <section
+            id="panel-customers"
+            role="tabpanel"
+            aria-labelledby="tab-customers"
+          >
+            <div class="section-heading">
+              <div>
+                <h2>Customers</h2>
+                <p>Create, edit and deactivate customer records.</p>
+              </div>
+              <button
+                type="button"
+                class="secondary"
+                data-refresh="customers"
+                data-auth
+              >
+                Refresh
+              </button>
+            </div>
+            <form id="customer-form" class="resource-form">
+              <fieldset disabled data-auth>
+                <legend id="customer-legend">New customer</legend>
+                <div class="fields">
+                  <label
+                    >Name<input
+                      name="name"
+                      maxlength="120"
+                      required
+                      placeholder="Alex Morgan" /></label
+                  ><label
+                    >Email<input
+                      name="email"
+                      type="email"
+                      maxlength="254"
+                      required
+                      placeholder="alex@example.com" /></label
+                  ><label
+                    >Phone <span>(optional)</span
+                    ><input
+                      name="phone"
+                      maxlength="32"
+                      placeholder="+353 1234567"
+                  /></label>
+                </div>
+                <div class="form-actions">
+                  <button type="submit" id="customer-save">
+                    Create customer</button
+                  ><button
+                    type="button"
+                    class="secondary"
+                    id="customer-reset"
+                    hidden
+                  >
+                    Cancel edit
+                  </button>
+                </div>
+              </fieldset>
+            </form>
+            <div id="customers-list" class="record-list">
+              <p class="empty">Connect to load customers.</p>
+            </div>
+            <div class="pagination">
+              <span id="customers-page">10 records per page</span>
+              <div>
+                <button
+                  type="button"
+                  class="secondary"
+                  data-page="customers"
+                  data-direction="-1"
+                  disabled
+                >
+                  Previous</button
+                ><button
+                  type="button"
+                  class="secondary"
+                  data-page="customers"
+                  data-direction="1"
+                  disabled
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          </section>
+          <section
+            id="panel-services"
+            role="tabpanel"
+            aria-labelledby="tab-services"
+            hidden
+          >
+            <div class="section-heading">
+              <div>
+                <h2>Services</h2>
+                <p>Durations determine each new booking’s end time.</p>
+              </div>
+              <button
+                type="button"
+                class="secondary"
+                data-refresh="services"
+                data-auth
+              >
+                Refresh
+              </button>
+            </div>
+            <form id="service-form" class="resource-form">
+              <fieldset disabled data-auth>
+                <legend id="service-legend">New service</legend>
+                <div class="fields">
+                  <label
+                    >Name<input
+                      name="name"
+                      maxlength="120"
+                      required
+                      placeholder="Consultation" /></label
+                  ><label
+                    >Duration <span>(minutes)</span
+                    ><input
+                      name="durationMinutes"
+                      type="number"
+                      min="1"
+                      max="1440"
+                      value="30"
+                      required /></label
+                  ><label class="wide"
+                    >Description <span>(optional)</span
+                    ><input
+                      name="description"
+                      maxlength="2000"
+                      placeholder="An introductory session" /></label
+                  ><label class="checkbox"
+                    ><input name="active" type="checkbox" checked /> Active
+                    service</label
+                  >
+                </div>
+                <div class="form-actions">
+                  <button type="submit" id="service-save">Create service</button
+                  ><button
+                    type="button"
+                    class="secondary"
+                    id="service-reset"
+                    hidden
+                  >
+                    Cancel edit
+                  </button>
+                </div>
+              </fieldset>
+            </form>
+            <div id="services-list" class="record-list">
+              <p class="empty">Connect to load services.</p>
+            </div>
+            <div class="pagination">
+              <span id="services-page">10 records per page</span>
+              <div>
+                <button
+                  type="button"
+                  class="secondary"
+                  data-page="services"
+                  data-direction="-1"
+                  disabled
+                >
+                  Previous</button
+                ><button
+                  type="button"
+                  class="secondary"
+                  data-page="services"
+                  data-direction="1"
+                  disabled
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          </section>
+          <section
+            id="panel-bookings"
+            role="tabpanel"
+            aria-labelledby="tab-bookings"
+            hidden
+          >
+            <div class="section-heading">
+              <div>
+                <h2>Bookings</h2>
+                <p>
+                  One resource per tenant. Overlapping active bookings return
+                  409.
+                </p>
+              </div>
+              <button
+                type="button"
+                class="secondary"
+                data-refresh="bookings"
+                data-auth
+              >
+                Refresh
+              </button>
+            </div>
+            <form id="booking-form" class="resource-form">
+              <fieldset disabled data-auth>
+                <legend>New booking</legend>
+                <div class="fields">
+                  <label
+                    >Customer ID<input
+                      name="customerId"
+                      list="customer-options"
+                      required
+                      placeholder="Choose or paste a UUID" /></label
+                  ><label
+                    >Service ID<input
+                      name="serviceId"
+                      list="service-options"
+                      required
+                      placeholder="Choose or paste a UUID" /></label
+                  ><label class="wide"
+                    >Start time <span>(UTC)</span
+                    ><input
+                      name="startAt"
+                      type="datetime-local"
+                      step="60"
+                      required
+                  /></label>
+                </div>
+                <datalist id="customer-options"></datalist
+                ><datalist id="service-options"></datalist>
+                <p class="hint">
+                  Suggestions use active records from the loaded
+                  customer/service pages. Paste any other record’s UUID. Times
+                  are entered and displayed in UTC.
+                </p>
+                <button type="submit">Create booking</button>
+              </fieldset>
+            </form>
+            <form id="booking-filters" class="filters">
+              <fieldset disabled data-auth>
+                <legend>Filter bookings</legend>
+                <label
+                  >Status<select name="status">
+                    <option value="">All statuses</option>
+                    <option value="active">Active</option>
+                    <option value="cancelled">Cancelled</option>
+                  </select></label
+                ><label
+                  >From <span>(UTC)</span
+                  ><input name="from" type="datetime-local" /></label
+                ><label
+                  >To <span>(UTC)</span
+                  ><input name="to" type="datetime-local" /></label
+                ><button type="submit" class="secondary">Apply filters</button>
+              </fieldset>
+            </form>
+            <div id="bookings-list" class="record-list">
+              <p class="empty">Connect to load bookings.</p>
+            </div>
+            <div class="pagination">
+              <span id="bookings-page">10 records per page</span>
+              <div>
+                <button
+                  type="button"
+                  class="secondary"
+                  data-page="bookings"
+                  data-direction="-1"
+                  disabled
+                >
+                  Previous</button
+                ><button
+                  type="button"
+                  class="secondary"
+                  data-page="bookings"
+                  data-direction="1"
+                  disabled
+                >
+                  Next
+                </button>
+              </div>
+            </div>
+          </section>
+        </section>
+        <aside class="card response-panel" aria-labelledby="response-heading">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">UNDER THE HOOD</p>
+              <h2 id="response-heading">API response</h2>
+            </div>
+            <span id="response-status" class="badge">Ready</span>
+          </div>
+          <p id="response-request" class="request-line">
+            Your next request will appear here.
+          </p>
+          <p id="response-id" class="hint">
+            Request IDs help trace backend responses.
+          </p>
+          <pre id="response-body" tabindex="0">
+// Connect your tenant to begin.
+// Authorization headers are never displayed.</pre>
+          <p class="hint">
+            Shows the most recent action or list request. Lists refresh in the
+            background after mutations.
+          </p>
+        </aside>
+      </div>
+      <footer>
+        BookingHub API · Backend test console
+        <span>Changes persist in the connected database.</span>
+      </footer>
+    </main>
+  </body>
+</html>
