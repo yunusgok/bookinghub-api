@@ -461,10 +461,13 @@ footer {
   }
   .topbar {
     padding: 16px;
+    flex-wrap: wrap;
+    gap: 16px;
   }
   nav {
     gap: 12px;
     font-size: 11px;
+    flex-wrap: wrap;
   }
   .intro {
     align-items: start;
