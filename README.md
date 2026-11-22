@@ -7,7 +7,7 @@
 
 A TypeScript REST API for appointment-based businesses: consultants, yoga studios and personal trainers. Each business manages customers, services and bookings using its own revocable API keys. A shared D1 database enforces tenant ownership and prevents overlapping appointments atomically.
 
-This is a backend portfolio project with local runtime verification. It has not been deployed or assessed under production load. An interactive Swagger UI is included for API exploration; there is no customer-facing frontend or public administrative API.
+This is a backend portfolio project with local runtime verification. It has not been deployed or assessed under production load. A lightweight browser console is included for testing the backend, alongside interactive Swagger documentation. There is no public administrative API.
 
 ## Contents
 
@@ -15,6 +15,7 @@ This is a backend portfolio project with local runtime verification. It has not 
 - [Features](#features)
 - [Stack and architecture](#stack-and-architecture)
 - [Run locally](#run-locally)
+- [Browser test console](#browser-test-console)
 - [Authentication and rotation](#authentication-and-rotation)
 - [API and Swagger UI](#api-and-swagger-ui)
 - [End-to-end example](#end-to-end-example)
@@ -42,6 +43,7 @@ BookingHub focuses on these backend boundaries: authenticated tenant identity, r
 - Service CRUD with 1–1440 minute durations and deactivation.
 - UTC bookings with calculated end times, filters, cancellation and database-enforced conflict prevention.
 - Request IDs, consistent errors, 16 KiB request limits, IP/tenant rate limits and metadata-only logs.
+- Browser test console for CRUD/booking flows and raw response inspection; no frontend dependencies or build step.
 - Machine-readable OpenAPI, Workers/D1 integration tests and GitHub Actions validation.
 
 ## Stack and architecture
@@ -90,7 +92,20 @@ export API_KEY
 curl -H "Authorization: Bearer $API_KEY" http://localhost:8787/v1/customers
 ```
 
-The initial D1 ID in `wrangler.jsonc` is a local placeholder. Local state is in the ignored `.wrangler/` directory. Tests use separate ephemeral databases and never this local development database.
+`wrangler.jsonc` contains the owner's provisioned remote D1 ID and Cloudflare account ID. Forks must configure their own account/database before remote operations. Local state is in the ignored `.wrangler/` directory. Tests use separate ephemeral databases and never this local development database.
+
+## Browser test console
+
+Open **http://localhost:8787/** after `npm run dev`. Paste a tenant API key (without the `Bearer` prefix) and click **Connect**. No separate frontend server, dependency install or build step is needed.
+
+- **Customers:** create, inspect, edit, deactivate and paginate records.
+- **Services:** create, inspect, edit duration/description/active status, deactivate and paginate.
+- **Bookings:** choose IDs suggested from loaded customer/service pages (or paste any UUID), enter a **UTC** start time, create, inspect, filter, paginate and cancel.
+- **API response:** inspect the HTTP status, response JSON and request ID. Mutation responses stay visible while lists refresh. Submit the same booking twice to see a real 409 conflict.
+
+The console calls the existing `/v1` endpoints on the same origin. It performs real database changes; deactivation and cancellation ask for confirmation. API keys are held only in page memory, never in local/session storage, cookies, URLs or the response panel. Disconnecting, refreshing or leaving the page clears the key and loaded records. No demo credential is embedded in the source. Provision keys through the existing CLI.
+
+`frontend/` contains plain HTML, CSS and JavaScript. Wrangler Static Assets serves these files alongside the Worker API; `/v1/*`, `/health`, `/docs` and `/openapi.json` remain Worker routes. The console uses only local assets and works without a CDN. Static responses have their own restrictive CSP and cache/security headers in `frontend/_headers`. `npm run build` validates both the Worker and asset configuration; `npm run deploy` publishes them together only when explicitly requested.
 
 ## Authentication and rotation
 
@@ -125,7 +140,7 @@ All `/v1` operations require `Authorization: Bearer <key>`. Unknown fields are r
 
 Successful bodies use `{ "data": ... }`. Lists add `{ "pagination": { "limit": 20, "offset": 0, "hasMore": false } }`; supply `limit` (1–100) and `offset` (0–100000). Ordering is ascending `(createdAt, id)`. Offset pagination can shift during concurrent writes. Inactive customers/services remain visible. Booking filters: `status`, `customerId`, `serviceId`, `from` (start inclusive), `to` (start exclusive). Unknown query parameters return 422.
 
-Errors use `{ "error": { "code": "booking_conflict", "message": "The time slot is unavailable.", "requestId": "..." } }`. Every response has a server-generated `X-Request-ID`; supplied IDs are not trusted. HTTP statuses: 200 retrieval/update, 201 creation, 204 deactivation, 400 malformed JSON/content type, 401 invalid credentials, 404 missing/foreign resource, 409 conflict/duplicate/inactive reference, 413 oversized body, 422 invalid input, 429 throttled (with `Retry-After: 60`), 500 generic internal error. No stack traces are returned.
+Errors use `{ "error": { "code": "booking_conflict", "message": "The time slot is unavailable.", "requestId": "..." } }`. Every API response has a server-generated `X-Request-ID`; supplied IDs are not trusted. HTTP statuses: 200 retrieval/update, 201 creation, 204 deactivation, 400 malformed JSON/content type, 401 invalid credentials, 404 missing/foreign resource, 409 conflict/duplicate/inactive reference, 413 oversized body, 422 invalid input, 429 throttled (with `Retry-After: 60`), 500 generic internal error. No stack traces are returned.
 
 ## End-to-end example
 
@@ -259,13 +274,13 @@ Drizzle's schema is in `src/db/schema.ts`; SQL migrations and Drizzle snapshots 
 After explicit approval to create/use Cloudflare infrastructure:
 
 1. Authenticate with `npx wrangler login` or a scoped `CLOUDFLARE_API_TOKEN` in your environment. Do not commit it.
-2. Create a D1 database with `npx wrangler d1 create bookinghub`; replace `database_id` in `wrangler.jsonc` with the returned identifier. Choose an account-unique rate-limit namespace ID.
+2. For the configured owner account, remote D1 `bookinghub` is already provisioned in WEUR and rate-limit namespace `1001` is allocated to this project. For another account, create a database with `npx wrangler d1 create bookinghub`, set `account_id` and `database_id` in `wrangler.jsonc`, and choose an unused rate-limit namespace ID.
 3. Review cost/quota limits, backup/retention policy, account access and routing. Keep D1 read replication disabled unless credential revocation consistency is revisited.
 4. Run `npm run db:migrate:remote` against the intended account/database. Back up existing data before subsequent migrations.
 5. Run `npm run admin -- bootstrap "Business name" --remote` and deliver the key through a secure channel.
 6. Run `npm run check`, then `npm run deploy`. Verify health, authenticated CRUD, cancellation, tenant isolation and conflicting creates on the deployed endpoint.
 
-There is no automatic deployment job. The placeholder database ID must be replaced before deploying. See the [release checklist](docs/release-checklist.md).
+There is no automatic deployment job. Verify the configured account and database IDs before remote operations. See the [release checklist](docs/release-checklist.md).
 
 ## Security and limitations
 

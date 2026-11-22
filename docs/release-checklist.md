@@ -21,7 +21,7 @@ The completed checks and exact results are recorded in [verification.md](verific
 - [ ] Configure required checks/branch protection.
 - [ ] Enable GitHub private vulnerability reporting and dependency update alerts.
 - [ ] Review Cloudflare account, access policy, quotas and potential charges.
-- [ ] Create/select remote D1; replace placeholder database ID and reserve rate-limit namespace.
+- [x] Create remote D1 `bookinghub` (WEUR), configure its real database ID and allocate rate-limit namespace `1001` to BookingHub (2026-11-22).
 - [ ] Configure backups, retention, monitoring, routes and TLS.
 - [ ] Apply remote migrations and provision initial tenant/keys securely.
 - [ ] Deploy only after explicit approval; run remote smoke, isolation and conflict tests.
