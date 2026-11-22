@@ -4,7 +4,7 @@ This portfolio project's v1 receives fixes on its current main development line.
 
 ## Report privately
 
-Use GitHub private vulnerability reporting once the repository owner enables it. Until a private reporting channel is configured, do not publish exploit details, real credentials or personal data in public issues. The release checklist requires enabling private reporting; no nonexistent contact address is advertised here.
+Private vulnerability reporting is enabled. [Report a vulnerability privately](https://github.com/yunusgok/bookinghub-api/security/advisories/new). Do not publish exploit details, real credentials or personal data in public issues. Dependabot alerts and security-update PRs are enabled.
 
 ## Controls and trust boundaries
 
@@ -33,6 +33,10 @@ Only self-hosted code and styles load in this console; a restrictive CSP is appl
 
 ## Known limitations and dependency review
 
-No credential scopes or expiration, centralized global throttling, idempotency keys, audit event storage, production monitoring or automated PII erasure. All keys for one tenant grant the same v1 permissions. Direct database operators must preserve canonical UTC values and migrations. Never remove triggers or disable foreign keys. No load or remote fault-injection assessment has been performed.
+No credential scopes or expiration, centralized global throttling, idempotency keys, audit event storage, external uptime alerting or automated PII erasure. All keys for one tenant grant the same v1 permissions. Direct database operators must preserve canonical UTC values and migrations. Never remove triggers or disable foreign keys. No load or remote fault-injection assessment has been performed.
 
 Drizzle Kit's stable development tooling includes deprecated esbuild-kit packages. A targeted npm override upgrades their esbuild to the patched version, and migration generation is verified after the override. Keep reviewing this override when upgrading Drizzle Kit. See `docs/verification.md` for actual audit results; no automatic downgrade or forced breaking audit fix is used.
+
+## Deployment operations
+
+Workers Logs and platform metrics are enabled for the deployed portfolio instance. Invocation logs and traces are disabled, and query strings are redacted at the platform configuration boundary. Application logs retain the metadata-only policy above. The initial operator API key and backup decryption key are stored only under ignored `.wrangler/credentials/`, with directory permissions 0700 and file permissions 0600. They are never distributed with the frontend, repository or release. See [operations](docs/operations.md) for backup, access, retention and rollback procedures.

@@ -64,3 +64,40 @@ Following explicit owner authorization, created remote D1 `bookinghub` with data
 Read the settings of the account's two deployed Workers; neither exposed a rate-limit binding. Allocated namespace `1001` to BookingHub in project configuration/documentation, keeping 120 requests per 60 seconds. Cloudflare's native rate-limit namespaces are operator-chosen identifiers, so this allocation is a project record rather than a separate globally enforced reservation. See the [official binding documentation](https://developers.cloudflare.com/workers/runtime-apis/bindings/rate-limit/).
 
 `npm run build` passed with the D1 and rate-limit bindings and existing frontend assets. Formatting checks passed for changed configuration/documentation. No remote migrations, tenant/key provisioning, deployment, Git commit or GitHub push was performed in this step.
+
+## Owner-authorized remote release — 2026-11-22
+
+The owner authorized completing all release-checklist steps, including remote migrations, credential provisioning, deployment and v1.0.0 release publication. Earlier statements about operations not yet performed describe the preceding preparation phases; this section records the subsequent live verification.
+
+GitHub private vulnerability reporting, dependency graph, Dependabot alerts and security-update PRs were verified enabled. The existing `protect main` ruleset had an empty required-check list; it now requires `validate` from GitHub Actions App ID 15368 and an up-to-date branch. PR-only changes, force-push/deletion protection and an empty bypass list remain in effect. Implementation [PR #1](https://github.com/yunusgok/bookinghub-api/pull/1) passed both hosted validation runs and merged normally.
+
+All 32 local tests, strict type checks, lint, formatting and the frontend-enabled build pass. Both migrations were applied to remote D1. The owner's initial demo credential is stored only in an ignored 0600 local file under a 0700 directory. No credential was committed or embedded in frontend assets.
+
+Initial deployment: `34b668d`, Worker version `3ed857ea-825c-43dc-84f1-7a4b4a5dc8e4`, HTTPS origin https://bookinghub-api.ynsmrgok.workers.dev/. The browser rendered the public console successfully. D1/limiter bindings, disabled read replication, persisted application logs, disabled invocation logs/traces, enabled workers.dev routing and disabled preview URLs were verified from deployed Worker settings. The final preparation additionally redacts query strings and replaces the console's local-only key-bootstrap hint with operator guidance.
+
+### Live smoke and database consistency
+
+- HTTPS health and request IDs.
+- Browser console and static CSP.
+- Static assets, Swagger and OpenAPI.
+- Authentication enforced.
+- Customer/service create, retrieve and updates.
+- Pagination.
+- Cross-tenant reads, lists, updates, deletes and references blocked.
+- 8 concurrent conflicting creates: 1 created, 7 conflicts, 1 persisted.
+- Cross-tenant booking access blocked.
+- Cancellation frees slot, repeated cancellation, calculated duration and adjacency.
+- Independent tenants can book same slot.
+- Booking filters.
+- Deactivation and inactive-service enforcement.
+- Validation.
+- Remote key revocation.
+- Remote D1: no active overlaps, no foreign-key violations, both guards present.
+
+The race test sent eight simultaneous overlapping requests over HTTPS: one returned 201 and seven returned 409; exactly one active booking was observed before cleanup. A remote D1 consistency query found zero overlapping active pairs, zero foreign-key violations and both guard triggers. All smoke bookings were cancelled; isolation customer/service records were deactivated and their credential revoked. The owner demo customer/service remain available using the privately held operator credential.
+
+### Recovery and operations evidence
+
+A pre-migration Time Travel bookmark was recorded. A supplementary remote SQL export was restored into isolated local SQLite; integrity, foreign keys, five domain tables and both guard triggers passed verification. AES-256-GCM encryption/decryption round-trip verification passed, and the temporary plaintext export was removed. Backup and encryption key are restricted, ignored local artifacts; neither is a release asset. D1's managed Free-plan backup window is seven days; current stored Workers Logs retention is three days. See [operations](operations.md) for sources, quotas, the upcoming observability pricing review, local-artifact retention, key rotation and recovery boundaries.
+
+Live log correlation matched a successful HTTPS health response's `X-Request-ID` to its application log stream. Raw tail output was neither retained nor published. No paid plan upgrade, external alerting subscription, unrelated custom-domain change, account collaborator or new token scope was introduced. There is no load-test, SLA, full disaster-recovery or production-readiness claim.

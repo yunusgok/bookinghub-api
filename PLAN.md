@@ -60,5 +60,16 @@ Publication follow-up: the first hosted CI run exposed two missing optional WASM
 - [x] Inspect the two currently deployed Worker settings; neither uses a rate-limit namespace. Allocate `1001` to BookingHub and retain the existing 120 requests / 60 seconds configuration.
 - [x] Verify remote D1 info: matching UUID, WEUR region, read replication disabled, zero tables.
 - [x] Validate updated configuration with a successful Wrangler dry-run build and formatting check.
-- [ ] Apply remote migrations and provision credentials in a separately authorized step.
-- [ ] Deploy in a separately authorized step.
+- [x] Apply remote migrations and provision credentials following explicit owner authorization on 2026-11-22.
+- [x] Deploy following explicit owner authorization on 2026-11-22; live smoke/isolation/conflict tests pass.
+
+## Remote release execution — 2026-11-22
+
+- [x] Verify GitHub security features; fix the active ruleset's empty required-check list by requiring `validate` and an up-to-date branch.
+- [x] Merge implementation PR #1 through successful required CI and deploy the protected main branch.
+- [x] Verify HTTPS routing, D1/limiter bindings, metadata-only logs and preview URL policy.
+- [x] Apply migrations, bootstrap the owner tenant, and store its key in a restricted ignored file.
+- [x] Restore-test the remote export locally, verify foreign keys/triggers, and encrypt the supplementary backup.
+- [x] Pass 16 live checks: CRUD, pagination, auth/revocation, tenant isolation, cancellation/adjacency and eight-request booking conflict race.
+- [x] Record Free-tier costs/quotas, managed backup/log retention and operator recovery procedures.
+- [ ] Publish the owner-authorized v1.0.0 tag/release after final CI and deployment verification.
