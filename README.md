@@ -5,7 +5,7 @@
 
 **Tenant-isolated booking management built with TypeScript, Cloudflare Workers and D1.**
 
-[Client-focused project case study](docs/case-study.md) · [Live console](https://bookinghub-api.ynsmrgok.workers.dev/) · [API documentation](https://bookinghub-api.ynsmrgok.workers.dev/docs)
+[Project case study](docs/case-study.md) · [Live console](https://bookinghub-api.ynsmrgok.workers.dev/) · [API documentation](https://bookinghub-api.ynsmrgok.workers.dev/docs)
 
 A TypeScript REST API for appointment-based businesses: consultants, yoga studios and personal trainers. Each business manages customers, services and bookings using its own revocable API keys. A shared D1 database enforces tenant ownership and prevents overlapping appointments atomically.
 
@@ -316,7 +316,7 @@ Use a branch and submit a pull request with a description of the behavior change
 
 ## Further documentation
 
-- [Client-focused project case study](docs/case-study.md)
+- [Project case study](docs/case-study.md)
 - [Architecture and data lifecycle](docs/architecture.md)
 - [Atomic scheduling design decision](docs/decisions/0001-d1-atomic-bookings.md)
 - [API request examples](docs/api-examples.md)
